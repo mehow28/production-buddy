@@ -1,0 +1,13 @@
+{
+  "appId": "io.ionic.starter",
+  "appName": "production-buddy",
+  "bundledWebRuntime": false,
+  "webDir": "dist",
+  "npmClient": "npm",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}
