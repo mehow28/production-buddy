@@ -1,22 +1,49 @@
 import { defineStore } from 'pinia';
+import router from '../router/index';
+import { fetchWrapper } from '../helpers/fetch-wrapper';
+import jwtDecode from 'jwt-decode';
+const baseUrl = 'https://localhost:7023/api/authentication';
 
+export const useAuthStore = defineStore({
+    id: 'auth',
+    state: () => ({
+        // initialize state from local storage to enable user to stay logged in
+        user: JSON.parse(localStorage.getItem('user')),
+        returnUrl: null,
+        authData: {
+            token: "",
+            tokenExp: "",
+            idKonta: "",
+            idPracownika: "",
+          },
+    }),
+    actions: {
+        async login(login, password) {
+            const user = await fetchWrapper.post(`${baseUrl}/authenticate`, { login:login, password:password });
 
-export const useAuthStore = defineStore("auth",()=>{
-    const user = JSON.parse(localStorage.getItem("user"));
-    async function userLogin(userInfo){
-        const response = await fetch("https://localhost:7023/api/authentication/authenticate",{
-            method:'POST',
-            headers: { "Content-Type": "application/json" },
-            body:JSON.stringify(userInfo)
-        }).then(response=>response.json());
-        console.log(response);
-        
-        this.user=response;
-        localStorage.setItem("user",response);
+            // update pinia state
+            this.user = user;
+
+            // store user details and jwt in local storage to keep user logged in between page refreshes
+            localStorage.setItem('user', JSON.stringify(user));
+            this.saveAuthToken(user);
+            // redirect to previous url or default to home page
+            router.push(this.returnUrl || '/');
+        },
+        saveAuthToken(payload){
+            const jwtDecodeUserInfo = jwtDecode(payload);
+            const newAuthData = {
+                token: payload,
+                tokenExp: jwtDecodeUserInfo.exp,
+                idKonta: jwtDecodeUserInfo.sub,
+                idPracownika: jwtDecodeUserInfo.name,
+            };
+            this.authData = newAuthData;
+        },
+        logout() {
+            this.user = null;
+            localStorage.removeItem('user');
+            router.push('/login');
+        }
     }
-    const userLogout = () => {
-        this.user.value=null;
-        localStorage.removeItem("user");
-    };
-    return {user,userLogin,userLogout}
 });
