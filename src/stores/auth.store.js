@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia';
 import router from '../router/index';
-import { fetchWrapper } from '../helpers/fetch-wrapper';
 import jwtDecode from 'jwt-decode';
-const baseUrl = 'https://localhost:7023/api/authentication';
+import { fetchCall } from '../helpers/fetch-caller';
 
 export const useAuthStore = defineStore({
     id: 'auth',
@@ -10,24 +9,13 @@ export const useAuthStore = defineStore({
         // initialize state from local storage to enable user to stay logged in
         user: JSON.parse(localStorage.getItem('user')),
         returnUrl: null,
-        authData: {
-            token: "",
-            tokenExp: "",
-            idKonta: "",
-            idPracownika: "",
-          },
     }),
     actions: {
         async login(login, password) {
-            const user = await fetchWrapper.post(`${baseUrl}/authenticate`, { login:login, password:password });
-
-            // update pinia state
+            const user = await fetchCall("authentication/authenticate","post",{login:login, password:password});
             this.user = user;
-
-            // store user details and jwt in local storage to keep user logged in between page refreshes
-            localStorage.setItem('user', JSON.stringify(user));
-            this.saveAuthToken(user);
-            // redirect to previous url or default to home page
+            const userInfo = this.saveAuthToken(user);
+            localStorage.setItem('user', JSON.stringify(userInfo));
             router.push(this.returnUrl || '/');
         },
         saveAuthToken(payload){
@@ -38,7 +26,7 @@ export const useAuthStore = defineStore({
                 idKonta: jwtDecodeUserInfo.sub,
                 idPracownika: jwtDecodeUserInfo.name,
             };
-            this.authData = newAuthData;
+            return newAuthData;
         },
         logout() {
             this.user = null;
