@@ -20,7 +20,7 @@
             <ion-label position="floating">Password</ion-label>
             <ion-input type="password" v-model="userInfo.password"></ion-input>
           </ion-item>
-          <ion-button expand="full" @click="login()">Login</ion-button>
+          <ion-button expand="full" @click="login">Login</ion-button>
         </ion-card-content>
       </ion-card>
     </ion-content>
@@ -31,16 +31,16 @@
       IonContent,
       IonButton,
       IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonItem,
-  IonLabel,
-  IonInput,
+      IonHeader,
+      IonToolbar,
+      IonTitle,
+      IonCard,
+      IonCardHeader,
+      IonCardTitle,
+      IonCardContent,
+      IonItem,
+      IonLabel,
+      IonInput,
 } from "@ionic/vue";
 import {useAuthStore} from '../stores/auth.store'
 export default {
@@ -59,10 +59,6 @@ export default {
     IonLabel,
     IonInput,
   },
-  setup (){
-    const authStore = useAuthStore();
-    return{authStore}
-  },
   data() {
     return {
       userInfo: {
@@ -72,14 +68,12 @@ export default {
     };
   },
   methods: {
-    async login() {
+    login() {
+      const authStore = useAuthStore()
       if (this.userInfo.login && this.userInfo.password) {
-        const user = this.authStore.userLogin(this.userInfo);
-        if(user.value!=null){
-            this.$router.push("/");
-        }else{
-            alert('falied to login')
-        }
+        return authStore
+          .login(this.userInfo.login,this.userInfo.password)
+          .catch(error=>console.error(error));
       }
     },
   },
