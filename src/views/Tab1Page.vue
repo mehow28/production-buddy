@@ -1,29 +1,20 @@
 <script setup>
   
-  //import { ref } from "vue";
   import { useQuery } from "vue-query";
   import { fetchCall } from '../helpers/fetch-caller';
   const idPracownika = JSON.parse(localStorage.getItem('user')).idPracownika;
 
-  
-  // function getProduktyQuery() {
-  //   return useQuery("idProduktu", ()=>fetchCall("produkty","get"));
-  // }
-  // function getEtapyQuery() {
-  //   return useQuery("idEtapu", ()=>fetchCall("etapy","get"));
-  // }
   function getZleceniaByPracownikQuery() {
     return useQuery("idZlecenia", ()=>fetchCall("ZleceniaPracownika","get",null,idPracownika));
   }
-  // const {data: dataProdukty } = getProduktyQuery();
-  // const {data: dataEtap } = getEtapyQuery();
   const {data: dataZlecenia, isLoadingStatus, isErrorStatus} = getZleceniaByPracownikQuery();
 
 </script>
 
 <template>  
+
   <ion-page>
-    <top-toolbar pageName="Tab 1"/>
+    <top-toolbar pageName="Zlecenia"/>
       <ion-content :fullscreen="true">
        
         <span v-if="isLoadingStatus">
@@ -55,30 +46,30 @@
               </ion-card-title>
             </ion-card-header>
 
-          <ion-item v-for="status in zlecenie.statuses" :key="status.idStatusu">
-            <ion-label>
-              <h2>{{status.idEtapuNavigation.nazwa}}</h2>
-              <p>{{status.idEtapuNavigation.opis}}</p>
-            </ion-label>
-            <span v-if="status.stan">
-              <ion-icon :icon="checkmarkCircleOutline" slot="end" color="success"/>
-            </span>
-            <span v-else>
-              <ion-icon :icon="closeCircleOutline" slot="end" color="warning"/>
-            </span>
-            <ion-button fill="outline" slot="end"  @click="openStatusModal(status.idStatusu)" >Zobacz</ion-button>
+            <ion-item v-for="status in zlecenie.statuses" :key="status.idStatusu">
+              <ion-label>
+                <h2>{{status.idEtapuNavigation.nazwa}}</h2>
+                <p>{{status.idEtapuNavigation.opis}}</p>
+              </ion-label>
+              <span v-if="status.stan">
+                <ion-icon :icon="checkmarkCircleOutline" slot="end" color="success"/>
+              </span>
+              <span v-else>
+                <ion-icon :icon="closeCircleOutline" slot="end" color="warning"/>
+              </span>
+              <ion-button fill="outline" slot="end"  @click="openStatusModal(status.idStatusu)" >Zobacz</ion-button>
 
-          </ion-item>
-          
-          <ion-card-content>
-            <p>{{zlecenie.opis}}</p>
-          </ion-card-content>
+            </ion-item>
+            
+            <ion-card-content>
+              <p>{{zlecenie.opis}}</p>
+            </ion-card-content>
           
           </ion-card>
         </span>
-
     </ion-content>
   </ion-page>
+
 </template>
 
 <script>
@@ -89,24 +80,7 @@ import StatusModal from "@/components/StatusModal.vue";
 export default  defineComponent({
   name: 'Tab1Page',
   components: {  IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonIcon, IonItem  },
-  data() {
-    return {
-      isOpen: false,
-    };
-  },
   methods: {
-    // setOpen(passedVal) {
-    //   if(passedVal!==-1){
-    //     this.isOpen = true;
-    //     this.passedIdStatusu=passedVal;
-    //   }
-    //   else{
-    //     this.isOpen=false;
-    //   }
-    // },
-    // modalDismiss(){
-    //   this.isOpen = false;
-    // },
     async openStatusModal(passedVal){
       const modal = await modalController.create({
         component: StatusModal, 
@@ -116,8 +90,6 @@ export default  defineComponent({
       });
       return modal.present();
     },
-    
   }
-  //, isLoadingStatus:isLoadingModal, isErrorStatus:isErrorModal
 });
 </script>

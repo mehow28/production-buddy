@@ -6,17 +6,17 @@
     import {modalController} from "@ionic/vue"
     //const idStat = this.idStatusu; 
     const props = defineProps({
-      idAwarii:Number,
+      idMaszyny:Number,
     });
     const closeModal = () => {
         modalController.dismiss();
       };
       
-    const {idAwarii} = toRefs(props)
-    function getAwariaById() {
-        return useQuery(["idAwarii"], ()=>fetchCall("awaria","get",null,idAwarii.value));
+    const {idMaszyny} = toRefs(props)
+    function getMaszynaById() {
+        return useQuery(["idMaszyny"], ()=>fetchCall("maszyny","get",null,idMaszyny.value));
     }
-    const {data: dataAwaria, isLoadingStatus:modalIsLoadingStatus, isErrorStatus:modalIsErrorStatus } = getAwariaById();
+    const {data: dataMaszyna, isLoadingStatus:modalIsLoadingStatus, isErrorStatus:modalIsErrorStatus } = getMaszynaById();
 
 </script>
 
@@ -24,8 +24,8 @@
     
     <ion-header>
       <ion-toolbar>
-        <span v-if="dataAwaria!=null">
-          <ion-title>Awaria id:{{dataAwaria[0].idAwarii}}</ion-title>
+        <span v-if="dataMaszyna!=null">
+          <ion-title>Maszyna: {{dataMaszyna.nazwa}}</ion-title>
         </span>
         <ion-buttons slot="end">
           <ion-button @click="closeModal">WYJDŹ</ion-button>
@@ -55,7 +55,7 @@
     </span>
 
     <span v-else>
-      {{dataAwaria}}
+      {{dataMaszyna}}
     </span>
 
     </ion-content>
@@ -72,7 +72,7 @@
   import { defineComponent } from "vue";
   
   export default defineComponent({
-    name: "AwariaModal",
+    name: "MaszynaModal",
     components: { IonContent, IonHeader, IonTitle, IonToolbar, IonButton },
   });
   </script>
