@@ -16,7 +16,10 @@
     ])
     const modelValue = ref("")
     const props = defineProps({
-      idMaszyny:Number,
+      idMaszyny:{
+        type:Number,
+        default:0
+      },
       modelValue:{
         type:String,
         default:""
@@ -24,7 +27,7 @@
     });
     const {idMaszyny} = toRefs(props)
     console.log("idMaszyny: "+idMaszyny)
-
+    //const machineData = ref();
     const updateModelValue = ($event) => {
         modelValue.value = $event.target.value
         emit("update:modelValue", $event.target.value)
@@ -33,14 +36,13 @@
     function getMaszynaById() {
         return useQuery(["idMaszyny"], ()=>fetchCall("maszyny","get",null,idMaszyny.value));
     }
+    function updateMaszynaIdAwarii() {
+        return useMutation((thisMaszyna)=>fetchCall("maszyny","put",thisMaszyna,idMaszyny.value));
+    }
     function postAwaria() {
-        return useMutation((newAwaria)=>fetchCall("awaria","post",newAwaria));
+        return useMutation((newAwaria)=>fetchCall("awaria","post",newAwaria))
     }
-    function addAwaria(){
-      mutate({stan:true,dataZgloszenia:new Date(),opis:modelValue.value});
-      console.log(modelValue.value)
-    }
-    const awariaAlert = async () => {
+    const awariaAlert = async (dataMaszyna) => {
       const alert=await alertController.create({
           header:'Dodać wpis o awarii?',
           buttons:[
@@ -54,7 +56,7 @@
               text: 'Potwierdź',
               role: 'confirm',
               handler: () => {
-                  addAwaria()
+                  addAwaria(dataMaszyna)
               },
           },
           ]
@@ -63,9 +65,28 @@
     };
 
     const {data: dataMaszyna, isLoading:modalIsLoadingStatus, isError:modalIsErrorStatus } = getMaszynaById();
-    const {mutate, isLoading,isError,error,isSuccess} = postAwaria();
+    const {mutate, isLoading,isError,error,isSuccess, data} = postAwaria();
+    const {mutate:maszynaMutate}= updateMaszynaIdAwarii();
+    console.log("marka:"+dataMaszyna.marka)
 
-
+    function addAwaria(maszyna){
+      mutate({
+        stan:true,dataZgloszenia:new Date(),opis:modelValue.value},{
+          onSuccess:(data)=>{
+            console.log(data.idAwarii)
+            maszynaMutate({
+              marka:maszyna.marka,
+              model:maszyna.model,
+              opis:maszyna.opis,
+              nazwa:maszyna.nazwa,
+              kategoria:maszyna.kategoria,
+              idAwarii:data.idAwarii,
+              dataPrzegladu:maszyna.dataPrzegladu,
+            })
+          }
+        });
+      console.log(data.idAwarii)
+    }
 </script>
 
 <template>
@@ -82,10 +103,28 @@
     <ion-content class="ion-padding">
       
       <span v-if="modalIsLoadingStatus">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title><ion-icon name="refresh-outline"/>Loading...</ion-card-title>
-          </ion-card-header>
+        <ion-card>          
+          <ion-list>
+            <ion-list-header>
+              <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
+            </ion-list-header>
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+              </ion-thumbnail>
+              <ion-label>
+                <h3>
+                  <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
+                </h3>
+                <p>
+                  <ion-skeleton-text [animated]="true" style="width: 60%;"></ion-skeleton-text>
+                </p>
+                <p>
+                  <ion-skeleton-text [animated]="true" style="width: 30%;"></ion-skeleton-text>
+                </p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
         </ion-card>
       </span>
     
@@ -112,7 +151,7 @@
           <ion-label>Model: {{dataMaszyna.model}}</ion-label>
         </ion-item>
         <ion-item>
-          <ion-label v-if="dataMaszyna.dataPrzegladu!=null">Ostatni przegląd: {{dataMaszyna.dataPrzegladu}}</ion-label>
+          <ion-label v-if="dataMaszyna.dataPrzegladu!=null">Ostatni przegląd: {{dataMaszyna.dataPrzegladu.split(".")[0].replace("T"," ").slice(0,-3).slice(2)}}</ion-label>
           <ion-label color="danger" v-else>Ostatni przegląd: BRAK PRZEGLĄDU</ion-label>
         </ion-item>
       </ion-list>    
@@ -129,7 +168,7 @@
     
     <ion-card>
         <ion-list style="text-align:center" color="warning">
-          <ion-button  fill="clear" color="success" expand="block" @click="awariaAlert()">Zgłoś awarię</ion-button>
+          <ion-button  fill="clear" color="success" expand="block" @click="awariaAlert(dataMaszyna)">Zgłoś awarię</ion-button>
         </ion-list>
       </ion-card>
       

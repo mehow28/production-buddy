@@ -1,9 +1,9 @@
 <script setup>
     
-    import { useQuery } from "vue-query";
+    import { useQuery,useMutation } from "vue-query";
     import { fetchCall } from '../helpers/fetch-caller';
     import { defineProps, toRefs} from "vue";
-    import {modalController} from "@ionic/vue"
+    import {modalController,alertController} from "@ionic/vue"
     //const idStat = this.idStatusu; 
     const props = defineProps({
       idMaszyny:Number,
@@ -16,8 +16,44 @@
     function getMaszynaById() {
         return useQuery(["idMaszyny"], ()=>fetchCall("maszyny","get",null,idMaszyny.value));
     }
+    function updateMaszynaPrzeglad() {
+        return useMutation((thisMaszyna)=>fetchCall("maszyny","put",thisMaszyna,idMaszyny.value));
+    }
+    function addPrzeglad(maszyna){
+      maszynaMutate({
+          marka:maszyna.marka,
+          model:maszyna.model,
+          opis:maszyna.opis,
+          nazwa:maszyna.nazwa,
+          kategoria:maszyna.kategoria,
+          idAwarii:maszyna.idAwarii,
+          dataPrzegladu:new Date(),
+        })
+    }
+    console.log()
+    const przegladAlert = async (dataMaszyna) => {
+      const alert=await alertController.create({
+          header:'Zaznaczyć wykonanie przeglądu?',
+          buttons:[
+          {
+              text: 'Wróć',
+              role: 'cancel',
+              handler: () => {
+                  },
+          },
+          {
+              text: 'Potwierdź',
+              role: 'confirm',
+              handler: () => {
+                  addPrzeglad(dataMaszyna)
+              },
+          },
+          ]
+      })
+      await alert.present();
+    };
     const {data: dataMaszyna, isLoadingStatus:modalIsLoadingStatus, isErrorStatus:modalIsErrorStatus } = getMaszynaById();
-
+    const {mutate:maszynaMutate}= updateMaszynaPrzeglad();
 </script>
 
 <template>
@@ -36,12 +72,30 @@
     <ion-content class="ion-padding">
       
       <span v-if="modalIsLoadingStatus">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title><ion-icon name="refresh-outline"/>Loading...</ion-card-title>
-        </ion-card-header>
-      </ion-card>
-    </span>
+        <ion-card>          
+          <ion-list>
+            <ion-list-header>
+              <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
+            </ion-list-header>
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+              </ion-thumbnail>
+              <ion-label>
+                <h3>
+                  <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
+                </h3>
+                <p>
+                  <ion-skeleton-text [animated]="true" style="width: 60%;"></ion-skeleton-text>
+                </p>
+                <p>
+                  <ion-skeleton-text [animated]="true" style="width: 30%;"></ion-skeleton-text>
+                </p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-card>
+      </span>
   
     <span v-else-if="modalIsErrorStatus">
       <ion-card color="warning">
@@ -65,8 +119,8 @@
         <ion-item>
           <ion-label>Model: {{dataMaszyna.model}}</ion-label>
         </ion-item>
-        <ion-item>
-          <ion-label v-if="dataMaszyna.dataPrzegladu!=null">Ostatni przegląd: {{dataAwaria.maszyny[0].dataPrzegladu}}</ion-label>
+        <ion-item @click="przegladAlert(dataMaszyna)">
+          <ion-label v-if="dataMaszyna.dataPrzegladu!=null">Ostatni przegląd: {{dataMaszyna.dataPrzegladu.split(".")[0].replace("T"," ").slice(0,-3).slice(2)}}</ion-label>
           <ion-label color="danger" v-else>Ostatni przegląd: BRAK PRZEGLĄDU</ion-label>
         </ion-item>
       </ion-list>    
@@ -74,7 +128,7 @@
 
     <ion-card>
       <ion-list style="text-align:center">
-        <ion-button v-if="dataMaszyna.idAwarii==null || dataMaszyna.idAwarii<1" expand="block" fill="clear" color="transparent" @click="openAwariaAddModal(dataMaszyna.idMaszyny)">ZGŁOŚ AWARIĘ MASZYNY</ion-button>
+        <ion-button v-if="dataMaszyna.idAwariaNavigation==true || dataMaszyna.idAwarii<1" expand="block" fill="clear" color="transparent" @click="openAwariaAddModal(dataMaszyna.idMaszyny)">ZGŁOŚ AWARIĘ MASZYNY</ion-button>
         <ion-button v-else expand="block" fill="clear" color="danger" @click="openAwariaViewModal(dataMaszyna.idAwarii)">AWARIA MASZYNY</ion-button>
       </ion-list>
     </ion-card>

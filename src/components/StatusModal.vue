@@ -34,12 +34,30 @@
   <ion-content class="ion-padding">
 
     <span v-if="modalIsLoadingStatus">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title><ion-icon name="refresh-outline"/>Loading...</ion-card-title>
-        </ion-card-header>
-      </ion-card>
-    </span>
+        <ion-card>          
+          <ion-list>
+            <ion-list-header>
+              <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
+            </ion-list-header>
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+              </ion-thumbnail>
+              <ion-label>
+                <h3>
+                  <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
+                </h3>
+                <p>
+                  <ion-skeleton-text [animated]="true" style="width: 60%;"></ion-skeleton-text>
+                </p>
+                <p>
+                  <ion-skeleton-text [animated]="true" style="width: 30%;"></ion-skeleton-text>
+                </p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-card>
+      </span>
   
     <span v-else-if="modalIsErrorStatus">
       <ion-card color="warning">
@@ -72,7 +90,7 @@
       </ion-item>
       <ng-container>
         <ion-list style="text-align:center">
-          <ion-button v-if="dataStatus.idMaszynyNavigation.idAwarii==null || dataStatus.idMaszynyNavigation.idAwarii<1" expand="block" fill="clear" color="transparent" @click="openAwariaAddModal(dataStatus.idMaszyny)">ZGŁOŚ AWARIĘ MASZYNY</ion-button>
+          <ion-button v-if="dataStatus.idMaszynyNavigation.idAwariaNavigation.stan==false || dataStatus.idMaszynyNavigation.idAwarii<1" expand="block" fill="clear" color="transparent" @click="openAwariaAddModal(dataStatus.idMaszyny)">ZGŁOŚ AWARIĘ MASZYNY</ion-button>
           <ion-button v-else expand="block" fill="clear" color="danger" @click="openAwariaViewModal(dataStatus.idMaszynyNavigation.idAwarii)">AWARIA MASZYNY</ion-button>
         </ion-list>
       </ng-container>
