@@ -82,12 +82,19 @@
         </ion-card-content>
       </ion-card>
 
-      <ng-container>
+      <ion-card>
         <ion-list style="text-align:center" color="warning">
-          <ion-button  fill="clear" color="warning" expand="block">huj</ion-button>
-
+          <ion-button  fill="clear" color="warning" expand="block">edytuj opis</ion-button>
         </ion-list>
-      </ng-container>
+      </ion-card>
+
+      
+      <ion-card>
+        <ion-list style="text-align:center" color="warning">
+          <ion-button  fill="clear" color="success" expand="block">usuń awarię i edytuj opis</ion-button>
+        </ion-list>
+      </ion-card>
+
     </span>
 
     </ion-content>

@@ -27,6 +27,7 @@
     "vue": "^3.2.21",
     "vue-query": "^1.26.0",
     "vue-router": "^4.0.12",
+    "vue-spinner": "^1.0.4",
     "yup": "^0.32.11"
   },
   "devDependencies": {

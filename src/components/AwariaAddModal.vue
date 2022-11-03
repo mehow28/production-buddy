@@ -1,23 +1,70 @@
 <script setup>
     
-    import { useQuery } from "vue-query";
+    import { useMutation, useQuery } from "vue-query";
     import { fetchCall } from '../helpers/fetch-caller';
-    import { defineProps, toRefs} from "vue";
+    import { defineProps, toRefs,defineEmits,ref} from "vue";
     import {modalController} from "@ionic/vue"
+    import { alertController } from '@ionic/core';
+    import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
     //const idStat = this.idStatusu; 
+    const closeModal = () => {
+      modalController.dismiss();
+    };
+    const emit = defineEmits([
+      "update:modelValue",
+      "change",
+    ])
+    const modelValue = ref("")
     const props = defineProps({
       idMaszyny:Number,
+      modelValue:{
+        type:String,
+        default:""
+      }
     });
-    const closeModal = () => {
-        modalController.dismiss();
-      };
-      
     const {idMaszyny} = toRefs(props)
-    console.log(idMaszyny)
+    console.log("idMaszyny: "+idMaszyny)
+
+    const updateModelValue = ($event) => {
+        modelValue.value = $event.target.value
+        emit("update:modelValue", $event.target.value)
+    }
+
     function getMaszynaById() {
         return useQuery(["idMaszyny"], ()=>fetchCall("maszyny","get",null,idMaszyny.value));
     }
-    const {data: dataMaszyna, isLoadingStatus:modalIsLoadingStatus, isErrorStatus:modalIsErrorStatus } = getMaszynaById();
+    function postAwaria() {
+        return useMutation((newAwaria)=>fetchCall("awaria","post",newAwaria));
+    }
+    function addAwaria(){
+      mutate({stan:true,dataZgloszenia:new Date(),opis:modelValue.value});
+      console.log(modelValue.value)
+    }
+    const awariaAlert = async () => {
+      const alert=await alertController.create({
+          header:'Dodać wpis o awarii?',
+          buttons:[
+          {
+              text: 'Wróć',
+              role: 'cancel',
+              handler: () => {
+                  },
+          },
+          {
+              text: 'Potwierdź',
+              role: 'confirm',
+              handler: () => {
+                  addAwaria()
+              },
+          },
+          ]
+      })
+      await alert.present();
+    };
+
+    const {data: dataMaszyna, isLoading:modalIsLoadingStatus, isError:modalIsErrorStatus } = getMaszynaById();
+    const {mutate, isLoading,isError,error,isSuccess} = postAwaria();
+
 
 </script>
 
@@ -65,17 +112,50 @@
           <ion-label>Model: {{dataMaszyna.model}}</ion-label>
         </ion-item>
         <ion-item>
-          <ion-label v-if="dataMaszyna.dataPrzegladu!=null">Ostatni przegląd: {{dataAwaria.maszyny[0].dataPrzegladu}}</ion-label>
+          <ion-label v-if="dataMaszyna.dataPrzegladu!=null">Ostatni przegląd: {{dataMaszyna.dataPrzegladu}}</ion-label>
           <ion-label color="danger" v-else>Ostatni przegląd: BRAK PRZEGLĄDU</ion-label>
         </ion-item>
       </ion-list>    
     </ion-card>
 
+    <!-- @input="$emit('update:modelValue', $event.target.value)" -->
+
     <ion-card>
       <ion-item>
-          <ion-textarea autoGrow="true" :value="dataAwaria.opis"></ion-textarea>
+        <ion-label position="stacked">Opisz awarię:</ion-label>
+        <ion-textarea autoGrow="true" type="text" :value="modelValue" @input="updateModelValue" @change="$emit('change',$event.target.value)"></ion-textarea>
       </ion-item>
     </ion-card>
+    
+    <ion-card>
+        <ion-list style="text-align:center" color="warning">
+          <ion-button  fill="clear" color="success" expand="block" @click="awariaAlert()">Zgłoś awarię</ion-button>
+        </ion-list>
+      </ion-card>
+      
+      <span v-if="isLoading">
+        <ion-card style="display: flex ">
+          <div class="ion-justify-content-center">
+            <pulse-loader :loading="loading" :color="primary"></pulse-loader>
+          </div>
+        </ion-card>
+      </span>
+      <span v-if="isError">
+        <ion-card>
+          <ion-item>
+            <p>Wystąpił błąd: {{error.message}}</p>
+          </ion-item>
+        </ion-card>
+      </span>
+      <span v-if="isSuccess">
+        <ion-card style="background-color:green">
+          <ion-item>
+            <h2>Awaria pomyślnie zapisana.</h2>
+          </ion-item>
+        </ion-card>
+      </span>
+
+
 
     </ion-content>
   </template>
