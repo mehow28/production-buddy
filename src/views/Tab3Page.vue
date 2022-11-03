@@ -1,10 +1,10 @@
 <template>
   <ion-page>
-    <top-toolbar pageName="Tab 3"/>
+    <top-toolbar pageName="Profil"/>
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-toolbar>
-          <ion-title size="large">Tab 3</ion-title>
+          <ion-title size="large">Profil</ion-title>
         </ion-toolbar>
       </ion-header>
       

@@ -41,23 +41,23 @@
             <ion-card-header>
               <ion-card-title>
                 Zlecenie #{{zlecenie.idZlecenia}} - "{{zlecenie.idProduktuNavigation.nazwa}}"
-                <ion-card-subtitle>Data rozpoczęcia: {{zlecenie.dataRozpoczecia.replace('T',' ')}}</ion-card-subtitle>
-                <ion-card-subtitle v-if="zlecenie.dataZakonczenia!=null">Data zakończenia: {{zlecenie.dataZakonczenia.replace('T',' ')}}</ion-card-subtitle>
+                <ion-card-subtitle>Data rozpoczęcia: {{zlecenie.dataRozpoczecia.split(".")[0].replace("T"," ").slice(0,-3).slice(2)}}</ion-card-subtitle>
+                <ion-card-subtitle v-if="zlecenie.dataZakonczenia!=null">Data zakończenia: {{zlecenie.dataZakonczenia.split(".")[0].replace("T"," ").slice(0,-3).slice(2)}}</ion-card-subtitle>
               </ion-card-title>
             </ion-card-header>
 
             <ion-item v-for="status in zlecenie.statuses" :key="status.idStatusu">
-              <ion-label>
+              <ion-label class="ion-text-wrap">
                 <h2>{{status.idEtapuNavigation.nazwa}}</h2>
                 <p>{{status.idEtapuNavigation.opis}}</p>
               </ion-label>
-              <span v-if="status.stan">
-                <ion-icon :icon="checkmarkCircleOutline" slot="end" color="success"/>
-              </span>
-              <span v-else>
-                <ion-icon :icon="closeCircleOutline" slot="end" color="warning"/>
-              </span>
-              <ion-button fill="outline" slot="end"  @click="openStatusModal(status.idStatusu)" >Zobacz</ion-button>
+              <ion-item v-if="status.stan">
+                <ion-icon :icon="checkmarkCircleOutline" color="success"/>
+              </ion-item>
+              <ion-item style="padding-right:-10px" v-else>
+                <ion-icon :icon="closeCircleOutline" color="warning"/>
+                <ion-button fill="outline"  @click="openStatusModal(status.idStatusu)" >Zobacz</ion-button>
+              </ion-item>
 
             </ion-item>
             

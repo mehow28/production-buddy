@@ -72,11 +72,12 @@
       </ion-item>
       <ng-container>
         <ion-list style="text-align:center">
-          <ion-button expand="block" fill="clear" color="transparent" @click="openAwariaModal(dataStatus.idMaszynyNavigation.idAwarii)">ZGŁOŚ AWARIĘ MASZYNY</ion-button>
+          <ion-button v-if="dataStatus.idMaszynyNavigation.idAwarii==null || dataStatus.idMaszynyNavigation.idAwarii<1" expand="block" fill="clear" color="transparent" @click="openAwariaAddModal(dataStatus.idMaszyny)">ZGŁOŚ AWARIĘ MASZYNY</ion-button>
+          <ion-button v-else expand="block" fill="clear" color="danger" @click="openAwariaViewModal(dataStatus.idMaszynyNavigation.idAwarii)">AWARIA MASZYNY</ion-button>
         </ion-list>
       </ng-container>
       
-      <ion-card>
+      <ion-card style="padding:0px;margin:0px">
         <ion-card-header>
           <ion-card-title>Wymagane surowce:</ion-card-title>
         </ion-card-header>
@@ -94,7 +95,7 @@
         </ion-card-content>
       </ion-card>
       
-      <ion-card>
+      <ion-card style="padding:0px;margin:0px">
         <ion-card-header>Notatki do etapu:</ion-card-header>
         <ion-card-content>
           <ion-item>
@@ -102,14 +103,12 @@
           </ion-item>
         </ion-card-content> 
       </ion-card>
-
-      <ion-card>
-        <ion-card-content>
-          <ion-list style="text-align:center">
-            <ion-button expand="block" fill="clear" color="transparent">Zapisz zmiany</ion-button>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
+      
+      <ng-container>
+        <ion-list style="text-align:center" >
+          <ion-button expand="block" fill="clear" color="transparent">Zapisz zmiany</ion-button>
+        </ion-list>
+      </ng-container>
       
     </span>
   </ion-content>
@@ -126,7 +125,8 @@
   } from "@ionic/vue";
   import { defineComponent } from "vue";
   import MaszynaModal from "@/components/MaszynaModal.vue";
-  import AwariaModal from "@/components/AwariaModal.vue";
+  import AwariaViewModal from "@/components/AwariaViewModal.vue";
+  import AwariaAddModal from "@/components/AwariaAddModal.vue";
   export default defineComponent({
     name: "StatusModal",
     components: { IonContent, IonHeader, IonTitle, IonToolbar, IonButton },
@@ -140,11 +140,20 @@
         });
         return modal.present();
       },
-      async openAwariaModal(passedAwaria){
+      async openAwariaViewModal(passedAwaria){
         const modal = await modalController.create({
-          component: AwariaModal, 
+          component: AwariaViewModal, 
           componentProps:{
-            idStatusu:passedAwaria
+            idAwarii:passedAwaria
+          }
+        });
+        return modal.present();
+      },
+      async openAwariaAddModal(passedMaszynaForAwaria){
+        const modal = await modalController.create({
+          component: AwariaAddModal, 
+          componentProps:{
+            idMaszyny:passedMaszynaForAwaria
           }
         });
         return modal.present();

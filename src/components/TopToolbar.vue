@@ -2,7 +2,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-title>{{pageName}}</ion-title>
-        <ion-button slot="end" @click="logoutAlert">Logout</ion-button>
+        <ion-button slot="end" @click="logoutAlert" style="padding-right:10px" fill="clear" color="danger">Wyloguj się</ion-button>
       </ion-toolbar>
     </ion-header>
   </template>
