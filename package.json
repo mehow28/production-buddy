@@ -25,6 +25,7 @@
     "pinia": "^2.0.22",
     "vee-validate": "^4.6.9",
     "vue": "^3.2.21",
+    "vue-barcode-reader": "^1.0.3",
     "vue-query": "^1.26.0",
     "vue-router": "^4.0.12",
     "vue-spinner": "^1.0.4",
