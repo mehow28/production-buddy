@@ -1,5 +1,4 @@
-<script setup>
-    
+<script setup>    
     import { useMutation, useQuery } from "vue-query";
     import { fetchCall } from '../helpers/fetch-caller';
     import { defineProps, toRefs,defineEmits,ref} from "vue";
@@ -19,10 +18,6 @@
       idMaszyny:{
         type:Number,
         default:0
-      },
-      modelValue:{
-        type:String,
-        default:""
       }
     });
     const {idMaszyny} = toRefs(props)
@@ -100,8 +95,7 @@
       </ion-toolbar>
     </ion-header>
     
-    <ion-content class="ion-padding">
-      
+    <ion-content class="ion-padding">      
       <span v-if="modalIsLoadingStatus">
         <ion-card>          
           <ion-list>
@@ -139,48 +133,50 @@
         </ion-card>
       </span>
 
-      <ion-card>
-      <ion-list lines="full">
-        <ion-item>
-          <ion-label><p>Kategoria: {{dataMaszyna.kategoria}}</p></ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label>Marka: {{dataMaszyna.marka}}</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label>Model: {{dataMaszyna.model}}</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label v-if="dataMaszyna.dataPrzegladu!=null">Ostatni przegląd: {{dataMaszyna.dataPrzegladu.split(".")[0].replace("T"," ").slice(0,-3).slice(2)}}</ion-label>
-          <ion-label color="danger" v-else>Ostatni przegląd: BRAK PRZEGLĄDU</ion-label>
-        </ion-item>
-      </ion-list>    
-    </ion-card>
+      <span v-else>
+        <ion-card style="padding:0px;margin:0px">
+          <ion-list lines="full">
+            <ion-item>
+              <ion-label><p>Kategoria: {{dataMaszyna.kategoria}}</p></ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Marka: {{dataMaszyna.marka}}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Model: {{dataMaszyna.model}}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label v-if="dataMaszyna.dataPrzegladu!=null">Ostatni przegląd: {{dataMaszyna.dataPrzegladu.split(".")[0].replace("T"," ").slice(0,-3).slice(2)}}</ion-label>
+              <ion-label color="danger" v-else>Ostatni przegląd: BRAK PRZEGLĄDU</ion-label>
+            </ion-item>
+          </ion-list>    
+        </ion-card>
 
-    <!-- @input="$emit('update:modelValue', $event.target.value)" -->
+        <!-- @input="$emit('update:modelValue', $event.target.value)" -->
 
-    <ion-card>
-      <ion-item>
-        <ion-label position="stacked">Opisz awarię:</ion-label>
-        <ion-textarea autoGrow="true" type="text" :value="modelValue" @input="updateModelValue" @change="$emit('change',$event.target.value)"></ion-textarea>
-      </ion-item>
-    </ion-card>
-    
-    <ion-card>
-        <ion-list style="text-align:center" color="warning">
-          <ion-button  fill="clear" color="success" expand="block" @click="awariaAlert(dataMaszyna)">Zgłoś awarię</ion-button>
-        </ion-list>
-      </ion-card>
-      
+        <ion-card style="padding:0px;margin:0px">
+          <ion-item>
+            <ion-label position="stacked">Opisz awarię:</ion-label>
+            <ion-textarea autoGrow="true" type="text" :value="modelValue" @input="updateModelValue" @change="$emit('change',$event.target.value)"></ion-textarea>
+          </ion-item>
+        </ion-card>
+        
+        <ion-card style="padding:0px;margin:0px">
+          <ion-list style="text-align:center" color="warning">
+            <ion-button  fill="clear" color="success" expand="block" @click="awariaAlert(dataMaszyna)">Zgłoś awarię</ion-button>
+          </ion-list>
+        </ion-card>
+      </span>
+
       <span v-if="isLoading">
-        <ion-card style="display: flex ">
+        <ion-card style="display:flex;padding:0px;margin:0px ">
           <div class="ion-justify-content-center">
             <pulse-loader :loading="loading" :color="primary"></pulse-loader>
           </div>
         </ion-card>
       </span>
       <span v-if="isError">
-        <ion-card>
+        <ion-card >
           <ion-item>
             <p>Wystąpił błąd: {{error.message}}</p>
           </ion-item>

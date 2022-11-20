@@ -24,10 +24,6 @@ async function openMaszynaModal(passedMaszyna){
   return modal.present();
 }
 
-const onLoaded = () => {
-  console.log("loaded")
-}
-
 const customAlert = async (alertType) => {
   let header =""
   if(alertType=="machineNotFound"){
@@ -53,7 +49,7 @@ const customAlert = async (alertType) => {
 const onDecode = (text) => {
   console.log("decoded");
   console.log(text);
-  if(text.split(":")[0]=="idMaszyny"){
+  if(text.split(":")[0]=="idMaszyny"&&parseInt(text.split(":")[1])>0){
     fetch(`https://localhost:7023/api/maszyny/${text.split(":")[1]}`, {method:'GET',mode:'cors'}).then((response)=>{
       if(response.status===404||response.status===400){
         customAlert("machineNotFound")
@@ -84,7 +80,7 @@ const onDecode = (text) => {
           <ion-label><h2>Zeskanuj kod QR maszyny:</h2></ion-label>
         </ion-card-header>
         <ion-card-content>
-          <StreamBarcodeReader @decode="onDecode" @loaded="onLoaded"></StreamBarcodeReader>
+          <StreamBarcodeReader @decode="onDecode"></StreamBarcodeReader>
         </ion-card-content>
         <ion-card-header style="text-align:center" >
           <ion-label><h2>Wpisz id maszyny:</h2></ion-label>
@@ -107,11 +103,11 @@ const onDecode = (text) => {
 
 <script>
 import { defineComponent } from 'vue';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonCard } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonLabel, IonCardHeader, IonCardContent, IonInput, IonButton, IonList,  } from '@ionic/vue';
 
 
 export default defineComponent({
   name: 'Tab2Page',
-  components: { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonCard }
+  components: { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonCard, IonLabel, IonCardHeader, IonCardContent, IonInput, IonButton, IonList, }
 });
 </script>

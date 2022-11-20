@@ -11,7 +11,6 @@
     import { defineComponent } from 'vue';
     import { IonHeader, IonToolbar, IonTitle,IonButton } from '@ionic/vue';
     import {useAuthStore} from '../stores/auth.store'
-    //import { Header } from '@ionic/core/dist/types/components/header/header';
     import { alertController } from '@ionic/core';
     export default defineComponent({
       components: { IonHeader, IonToolbar, IonTitle,IonButton },
@@ -20,10 +19,10 @@
         const authStore = useAuthStore();
         const logoutAlert = async () => {
             const alert = await alertController.create({
-                header:'Are you sure you want to logout?',
+                message:'Czy na pewno chcesz się wylogować?',
                 buttons:[
                 {
-                    text: 'Cancel',
+                    text: 'Anuluj',
                     role: 'cancel',
                     handler: () => {
                         },

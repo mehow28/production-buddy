@@ -11,10 +11,6 @@
       idAwarii:{
         type:Number,
         default:0
-      },
-      opisAwarii:{
-        type:String,
-        default:"",
       }
     });
     const emit = defineEmits([
@@ -132,46 +128,46 @@
     </span>
 
     <span v-else>
-      
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title style="text-align:center"><h3>Stanowisko: {{dataAwaria.maszyny[0].nazwa}}</h3></ion-card-title>
-          <ion-card-subtitle style="text-align:center"><p>Marka: {{dataAwaria.maszyny[0].marka}}</p><p>Model: {{dataAwaria.maszyny[0].model}}</p></ion-card-subtitle>
-          <ion-item>
-            <ion-label v-if="dataAwaria.maszyny[0].dataPrzegladu!=null">Ostatni przegląd: {{dataAwaria.maszyny[0].dataPrzegladu.split(".")[0].replace("T"," ").slice(0,-3).slice(2)}}</ion-label>
-            <ion-label style="text-align:center" color="danger" v-else>BRAK PRZEGLĄDU</ion-label>
-          </ion-item>
-        </ion-card-header>
-      </ion-card>
+      <div v-if="dataAwaria">  
+        <ion-card style="padding:0px;margin:0px">
+          <ion-card-header style="padding:0px;margin:0px">
+            <ion-card-title style="text-align:center"><h3>Stanowisko: {{dataAwaria.maszyny[0].nazwa}}</h3></ion-card-title>
+            <ion-card-subtitle style="text-align:center"><p>Marka: {{dataAwaria.maszyny[0].marka}}</p><p>Model: {{dataAwaria.maszyny[0].model}}</p></ion-card-subtitle>
+            <ion-item>
+              <ion-label v-if="dataAwaria.maszyny[0].dataPrzegladu!=null">Ostatni przegląd: {{dataAwaria.maszyny[0].dataPrzegladu.split(".")[0].replace("T"," ").slice(0,-3).slice(2)}}</ion-label>
+              <ion-label style="text-align:center" color="danger" v-else>BRAK PRZEGLĄDU</ion-label>
+            </ion-item>
+          </ion-card-header>
+        </ion-card>
 
-      <ion-card>
-        <ion-card-content>  
-          <ion-card-subtitle style="text-align:center">
-            <h2>Data zgłoszenia: </h2>
-            <p slot="end">{{dataAwaria.dataZgloszenia.split(".")[0].replace("T"," ").slice(0,-3).slice(2)}}</p>
-          </ion-card-subtitle>
-          <ion-item>
-            <ion-label style="text-align: center;"><h1>Opis awarii:</h1></ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-textarea autoGrow="true" :placeholder="dataAwaria.opis" :value="opisAwarii" @input="updateOpisAwarii" @change="$emit('change',$event.target.value)"></ion-textarea>
-          </ion-item>
-        </ion-card-content>
-      </ion-card>
+        <ion-card style="padding:0px;margin:0px">
+          <ion-card-content style="padding:0px;margin:0px">  
+            <ion-card-subtitle style="text-align:center">
+              <h2>Data zgłoszenia: </h2>
+              <p>{{dataAwaria.dataZgloszenia.split(".")[0].replace("T"," ").slice(0,-3).slice(2)}}</p>
+            </ion-card-subtitle>
+            <ion-item>
+              <ion-label style="text-align: center;"><h1>Opis awarii:</h1></ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-textarea style="text-align: center;" autoGrow="true" :placeholder="dataAwaria.opis" :value="opisAwarii" @input="updateOpisAwarii" @change="$emit('change',$event.target.value)"></ion-textarea>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
 
-      <ion-card>
-        <ion-list style="text-align:center" color="warning">
-          <ion-button  fill="clear" color="warning" expand="block" @click="awariaAlert(dataAwaria,true)">edytuj opis</ion-button>
-        </ion-list>
-      </ion-card>
+        <ion-card style="padding:5px;margin:0px">
+          <ion-list style="text-align:center;padding:0px;margin:0px" color="warning">
+            <ion-button  fill="clear" color="warning" expand="block" @click="awariaAlert(dataAwaria,true)">edytuj opis</ion-button>
+          </ion-list>
+        </ion-card>
 
-      
-      <ion-card>
-        <ion-list style="text-align:center" color="warning">
-          <ion-button  fill="clear" color="success" expand="block" @click="awariaAlert(dataAwaria,false)">usuń awarię i edytuj opis</ion-button>
-        </ion-list>
-      </ion-card>
-
+        
+        <ion-card style="padding:5px;margin:0px">
+          <ion-list style="text-align:center;padding:0px;margin:0px" color="warning">
+            <ion-button  fill="clear" color="success" expand="block" @click="awariaAlert(dataAwaria,false)">usuń awarię i edytuj opis</ion-button>
+          </ion-list>
+        </ion-card>
+      </div>
     </span>
 
     </ion-content>
@@ -179,18 +175,13 @@
   
   <script>
   import {
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButton,
-    IonCard
+    IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonCard, IonButtons, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonItem, IonList, IonIcon, IonCardTitle, IonCardHeader, IonCardContent, IonCardSubtitle, IonTextarea, 
   } from "@ionic/vue";
   import { defineComponent } from "vue";
   
   export default defineComponent({
     name: "AwariaViewModal",
-    components: { IonContent, IonHeader, IonTitle, IonToolbar, IonButton,IonCard },
+    components: { IonContent, IonHeader, IonTitle, IonToolbar, IonButton,IonCard, IonButtons, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonItem, IonList, IonIcon, IonCardTitle, IonCardHeader, IonCardContent, IonCardSubtitle, IonTextarea,  },
   });
   </script>
   

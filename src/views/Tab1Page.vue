@@ -16,7 +16,9 @@
   <ion-page>
     <top-toolbar pageName="Zlecenia"/>
       <ion-content :fullscreen="true">
-       
+        <ion-refresher slot="fixed" @ionRefresh="reloadPage">
+          <ion-refresher-content></ion-refresher-content>
+        </ion-refresher>
         <span v-if="isLoadingStatus">
           <ion-card>          
             <ion-list>
@@ -55,7 +57,7 @@
         </span>
         
         <span v-else> 
-          <ion-card v-for="zlecenie in dataZlecenia" :key="zlecenie.idZlecenia">
+          <ion-card style="padding:0px;margin:10px" v-for="zlecenie in dataZlecenia" :key="zlecenie.idZlecenia">
             <ion-card-header>
               <ion-card-title>
                 Zlecenie #{{zlecenie.idZlecenia}} - "{{zlecenie.idProduktuNavigation.nazwa}}"
@@ -67,13 +69,13 @@
             <ion-item v-for="status in zlecenie.statuses" :key="status.idStatusu">
               <ion-label class="ion-text-wrap">
                 <h2>{{status.idEtapuNavigation.nazwa}}</h2>
-                <p>{{status.idEtapuNavigation.opis}}</p>
+                <p>{{status.notatki}}</p>
               </ion-label>
-              <ion-item v-if="status.stan">
-                <ion-icon :icon="checkmarkCircleOutline" color="success"/>
-              </ion-item>
-              <ion-item style="padding-right:-10px" v-else>
-                <ion-icon :icon="closeCircleOutline" color="warning"/>
+              
+              
+              <ion-item style="padding-right:-10px" >
+                <ion-icon v-if="status.stan" :icon="checkmarkCircleOutline" color="success"/>
+                <ion-icon v-else :icon="closeCircleOutline" color="warning"/>
                 <ion-button fill="outline"  @click="openStatusModal(status.idStatusu)" >Zobacz</ion-button>
               </ion-item>
 
@@ -92,12 +94,12 @@
 
 <script>
 import { defineComponent } from 'vue';
-import { IonPage,  IonContent,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonIcon, IonItem, modalController  } from '@ionic/vue';
+import { IonPage,  IonContent,IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonIcon, IonItem, modalController, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonList, IonButton, IonRefresher, IonRefresherContent  } from '@ionic/vue';
 import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 import StatusModal from "@/components/StatusModal.vue";
 export default  defineComponent({
   name: 'Tab1Page',
-  components: {  IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonIcon, IonItem  },
+  components: {  IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonIcon, IonItem, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonList, IonButton, IonRefresher, IonRefresherContent  },
   methods: {
     async openStatusModal(passedVal){
       const modal = await modalController.create({
@@ -108,6 +110,9 @@ export default  defineComponent({
       });
       return modal.present();
     },
+    reloadPage() {
+      window.location.reload();
+    }
   }
 });
 </script>
