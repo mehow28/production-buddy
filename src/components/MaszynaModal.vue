@@ -155,7 +155,7 @@
   
   <script>
   import {
-    IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonItem, IonList, IonCard, IonIcon, IonCardTitle, IonCardHeader, IonCardContent, IonAccordion, ionAccordionGroup,
+    IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonItem, IonList, IonCard, IonIcon, IonCardTitle, IonCardHeader, IonCardContent, IonAccordion, IonAccordionGroup,
   } from "@ionic/vue";
   import { defineComponent } from "vue";
   import AwariaViewModal from "@/components/AwariaViewModal.vue";
@@ -165,7 +165,7 @@
 
   export default defineComponent({
     name: "MaszynaModal",
-    components: { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonItem, IonList, IonCard, IonIcon, IonCardTitle, IonCardHeader, IonCardContent, IonAccordion, ionAccordionGroup, },
+    components: { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonItem, IonList, IonCard, IonIcon, IonCardTitle, IonCardHeader, IonCardContent, IonAccordion, IonAccordionGroup, },
     methods:{
       async openAwariaViewModal(passedAwaria){
         const modal = await modalController.create({

@@ -4,7 +4,8 @@
   import { ref,defineEmits } from 'vue';
 
   const idPracownika = JSON.parse(localStorage.getItem('user')).idPracownika;
- 
+  const accessRights = JSON.parse(localStorage.getItem('user')).access;
+
   function getPracownik() {
     return useQuery("idPracownika", ()=>fetchCall("pracownicy","get",null,idPracownika));
   }
@@ -149,21 +150,33 @@
       </span>
 
     </ion-content>
+
+    <div v-if="accessRights=='wszystkie'" style="margin-left:auto;margin-right:10px;margin-bottom:10px">
+      <ion-fab-button size="medium" style="border-radius:50px" @click="openStatusAddModal"><ion-icon :icon="add"/></ion-fab-button>
+    </div>
+
   </ion-page>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
-import { IonPage,  IonContent, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonItem, IonList, IonCard, IonIcon, IonCardTitle, IonCardHeader, IonCardContent, IonInput, IonRefresher, IonRefresherContent } from '@ionic/vue';
-import {createOutline, checkmarkOutline} from 'ionicons/icons'
+import { modalController, IonPage, IonFabButton, IonContent, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonItem, IonList, IonCard, IonIcon, IonCardTitle, IonCardHeader, IonCardContent, IonInput, IonRefresher, IonRefresherContent } from '@ionic/vue';
+import {createOutline, checkmarkOutline, add} from 'ionicons/icons'
+import StatusAddModal from "@/components/StatusAddModal.vue"
 
 export default defineComponent({
   name: 'Tab3Page',
-  components: {  IonContent, IonPage, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonItem, IonList, IonCard, IonIcon, IonCardTitle, IonCardHeader, IonCardContent, IonInput, IonRefresher, IonRefresherContent},
+  components: {  IonContent,IonFabButton, IonPage, IonSkeletonText, IonListHeader, IonThumbnail, IonLabel, IonItem, IonList, IonCard, IonIcon, IonCardTitle, IonCardHeader, IonCardContent, IonInput, IonRefresher, IonRefresherContent},
   methods:{
     reloadPage() {
       window.location.reload();
-    }
+    },
+    async openStatusAddModal(){
+        const modal = await modalController.create({
+          component: StatusAddModal
+        });
+        return modal.present();
+      },
   },
   data(){
     return{

@@ -3,7 +3,7 @@
     import { fetchCall } from '../helpers/fetch-caller';
     import { defineProps, toRefs,ref,defineExpose,defineEmits} from "vue";
     import {modalController,alertController} from "@ionic/vue"
-    //const idStat = this.idStatusu; 
+    
     const props = defineProps({
       idStatusu:Number,
     });
