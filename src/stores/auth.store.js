@@ -25,6 +25,7 @@ export const useAuthStore = defineStore({
                 tokenExp: jwtDecodeUserInfo.exp,
                 idKonta: jwtDecodeUserInfo.sub,
                 idPracownika: jwtDecodeUserInfo.name,
+                access: jwtDecodeUserInfo.access
             };
             return newAuthData;
         },

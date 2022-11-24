@@ -7,7 +7,7 @@ const fetchGetAll = async(url) => await fetchWrapper.get(url);
 const fetchGetOne = async(url) => await fetchWrapper.get(url);
 const fetchDelete = async(url) => await fetchWrapper.delete(url);
 const fetchPost = async(url, body) => await fetchWrapper.post(url, body);
-const fetchUpdate = async(url, body) => await fetchWrapper.update(url, body);
+const fetchUpdate = async(url, body) => await fetchWrapper.put(url, body);
 
 export const fetchCall = async (
     controller ="",
